@@ -14,7 +14,9 @@ describe("Bitfruit", function () {
     expect(name).equal('BitFruit');
   });
 
-  describe('Bit fruit creation' , async () => {
+  
+describe('Bit fruit creation' , async () => {
+  it ('should create a fruit', async () => {
     const Bitfruit = await ethers.getContractFactory("Bitfruit");
     const bitfruit = await Bitfruit.deploy();
     await bitfruit.createFruit(data1);
@@ -22,5 +24,55 @@ describe("Bitfruit", function () {
     const fruit = await bitfruit.getFruit(0);
     
     expect(fruit.data).equal(data1);
+  })
+
+  it ('Should fail if invalid data', async () => {
+    const Bitfruit = await ethers.getContractFactory("Bitfruit");
+    const bitfruit = await Bitfruit.deploy();
+    await expect(
+      bitfruit.createFruit('nonsense')
+    ).to.be.revertedWith("Invalid Data");
+  });
+
+  it('Should be able to create fruits with these values' , async () => {
+    const Bitfruit = await ethers.getContractFactory("Bitfruit");
+    const bitfruit = await Bitfruit.deploy();
+
+    const test0 =  Array(64).fill('0').join('');
+    const test1 =  Array(64).fill('1').join('');
+    const test2 =  Array(64).fill('2').join('');
+    const test3 =  Array(64).fill('3').join('');
+    const test4 =  Array(64).fill('4').join('');
+    const test5 =  Array(64).fill('5').join('');
+    const test6 =  Array(64).fill('6').join('');
+    const test7 =  Array(64).fill('7').join('');
+    const test8 =  Array(64).fill('8').join('');
+    const test9 =  Array(64).fill('9').join('');
+    const testA =  Array(64).fill('A').join('');
+    const testB =  Array(64).fill('B').join('');
+    const testC =  Array(64).fill('C').join('');
+    const testD =  Array(64).fill('D').join('');
+    const testE =  Array(64).fill('E').join('');
+    const testF =  Array(64).fill('F').join('');
+
+    await bitfruit.createFruit(test0);
+    await bitfruit.createFruit(test1);
+    await bitfruit.createFruit(test2);
+    await bitfruit.createFruit(test3);
+    await bitfruit.createFruit(test4);
+    await bitfruit.createFruit(test5);
+    await bitfruit.createFruit(test6);
+    await bitfruit.createFruit(test7);
+    await bitfruit.createFruit(test8);
+    await bitfruit.createFruit(test9);
+    await bitfruit.createFruit(testA);
+    await bitfruit.createFruit(testB);
+    await bitfruit.createFruit(testC);
+    await bitfruit.createFruit(testD);
+    await bitfruit.createFruit(testE);
+    await bitfruit.createFruit(testF);
+    });
   });
 });
+
+

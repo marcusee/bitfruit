@@ -26,6 +26,7 @@ contract Bitfruit is ERC721URIStorage {
     }
 
     function createFruit(string memory data) public returns (uint256) {
+        require(validateData(data), 'Invalid Data');
         uint256 newTokenId = _tokenIds.current();
         _tokenIds.increment();
         
@@ -39,18 +40,19 @@ contract Bitfruit is ERC721URIStorage {
     }
 
     function getFruit(uint256 tokenId) public view returns (Fruit memory) {
-      require(tokenId <= _tokenIds.current());
+      require(tokenId <= _tokenIds.current(), 'Non existing fruit');
       return tokenIdToFruit[tokenId];
     }
 
+
+    // Only accepts 0-9 and A-F
     function validateData(string memory data) private pure returns (bool) {
       bytes memory b = bytes(data);
-      //41 -- 5A
       for(uint i = 0; i<b.length; i++) {
         bytes1 char = b[i];
 
         if(!(char >= 0x30 && char <= 0x39)) {
-          if (!(char >= 0x41 && char <= 0x5A)){
+          if (!(char >= 0x41 && char <= 0x46)){
             return false;
           }
         }
