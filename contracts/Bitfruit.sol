@@ -27,6 +27,7 @@ contract Bitfruit is ERC721URIStorage {
 
     function createFruit(string memory data) public returns (uint256) {
         require(validateData(data), 'Invalid Data');
+
         uint256 newTokenId = _tokenIds.current();
         _tokenIds.increment();
         
@@ -36,6 +37,8 @@ contract Bitfruit is ERC721URIStorage {
           block.timestamp
         );
 
+        _mint(msg.sender, newTokenId);
+        
         return newTokenId;
     }
 
