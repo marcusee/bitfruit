@@ -11,9 +11,9 @@ import "hardhat/console.sol";
 contract Bitfruit is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    address public owner;
+    address private owner;
 
-    mapping(uint256 => Fruit) tokenIdToFruit;
+    mapping(uint256 => Fruit) private tokenIdToFruit;
 
     struct Fruit {
       uint256 tokenId;
@@ -21,8 +21,14 @@ contract Bitfruit is ERC721URIStorage {
       uint256 created;
     }
 
+    mapping(byte1 => string) private colourMapping;
+
     constructor() ERC721("BitFruit", "BFT") {
       owner = payable(msg.sender);
+
+      colourMapping
+
+
     }
 
     function createFruit(string memory data) public returns (uint256) {
@@ -47,7 +53,6 @@ contract Bitfruit is ERC721URIStorage {
       return tokenIdToFruit[tokenId];
     }
 
-
     // Only accepts 0-9 and A-F
     function validateData(string memory data) private pure returns (bool) {
       bytes memory b = bytes(data);
@@ -64,5 +69,66 @@ contract Bitfruit is ERC721URIStorage {
       }
 
       return true;
+    }
+
+    string generateSVG(string memory data) public pure returns (string memory) {
+      uint8 size = 4;
+      string memory head = '<svg width="256" height="256">';
+
+      string memory rows[64];
+      string memory body = '';
+
+      bytes32 memory byteData = bytes(data);
+
+      for (uint i = 0 ; i < 64 ; i ++ ) {
+
+        uint x = i % 8;
+        uint y = i / 8;
+
+        uint xPos = x * size;
+        uint yPos = y * size;
+
+        string(
+          abi.encodePacked(
+            body,
+            '<rect ',
+            'height = "', uint2str(size) , '" ' 
+            'width = "', uinr2str(size), '" ',
+            'x = "', uint2str(xPos), '" ',
+            'y = "', uint2str(yPos), '" ',
+            '>',
+          )
+        );
+      }
+
+      string memory tail = '</svg>';
+
+      return string(abi.encodePacked(
+        head,
+        body,
+        tail
+      ));
+    }
+
+    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+      if (_i == 0) {
+          return "0";
+      }
+      uint j = _i;
+      uint len;
+      while (j != 0) {
+          len++;
+          j /= 10;
+      }
+      bytes memory bstr = new bytes(len);
+      uint k = len;
+      while (_i != 0) {
+          k = k-1;
+          uint8 temp = (48 + uint8(_i - _i / 10 * 10));
+          bytes1 b1 = bytes1(temp);
+          bstr[k] = b1;
+          _i /= 10;
+      }
+      return string(bstr);
     }
 }

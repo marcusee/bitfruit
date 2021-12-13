@@ -89,6 +89,15 @@ describe("Bitfruit", function () {
       ).to.be.revertedWith('Invalid Data');
     });
   });
+
+  describe('generate it', () => {
+    it ('Should create an svg' , () => {
+      const Bitfruit = await ethers.getContractFactory("Bitfruit");
+      const bitfruit = await Bitfruit.deploy();
+
+    });
+  });
+
 });
 
 
