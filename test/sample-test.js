@@ -88,6 +88,28 @@ describe("Bitfruit", function () {
         bitfruit.createFruit(testAt)
       ).to.be.revertedWith('Invalid Data');
     });
+
+    it("Should propagate a fruit", async function () {
+      const BitFruit = await hre.ethers.getContractFactory("Bitfruit");
+      const bitfruit = await BitFruit.deploy();
+      await bitfruit.deployed();
+      let transaction1 = await bitfruit.createFruit(data1);
+      let transaction2 = await bitfruit.createFruit(data2);
+  
+      let a = await bitfruit.getFruit(0);
+      let b = await bitfruit.getFruit(1);
+      await bitfruit.propagate(0,1);
+  
+      let c = await bitfruit.getFruit(2);
+      expect(c.tokenId).equal(2);
+  
+      let aa =  await bitfruit.getFruit(0);
+      let bb =  await bitfruit.getFruit(1);
+  
+      expect( aa.data).equal(data1);
+      expect( bb.data).equal(data2);
+  
+    });
   });
 });
 
