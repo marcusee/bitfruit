@@ -65,4 +65,63 @@ contract Bitfruit is ERC721URIStorage {
 
       return true;
     }
+
+    function propagate(uint256 parentA, uint256 parentB) public returns (uint256) {
+      // TODO: Error checking
+
+      Fruit memory A = tokenIdToFruit[parentA];
+      Fruit memory B = tokenIdToFruit[parentB];
+
+      // INSECURE gotta use that stupid chain link random thing
+      uint256 seed = block.timestamp;
+      uint256 randomNumber = uint256(keccak256(abi.encodePacked(uint2str(seed))));
+      string memory data = createNewData(A.data, B.data, randomNumber);
+      uint256 childTokenId = createFruit(data);
+      
+      return childTokenId;
+      // return childTokenId;
+    }
+
+    function createNewData(string memory dataA, string memory dataB, uint256 randomNumber) private pure returns (string memory) {
+      bytes memory byteDataA = bytes(dataA);
+      bytes memory byteDataB = bytes(dataB);
+      bytes memory newDataBytes = bytes(dataA);
+
+      for(uint i = 0 ; i < 64; i++) {
+        uint digit = randomNumber % 10;
+        if (digit > 4) {
+          // Get Parent A color
+          newDataBytes[i] = byteDataA[i];
+        } else {
+          // Get Parent B color
+          newDataBytes[i] = byteDataB[i];
+        } 
+
+        randomNumber = randomNumber / 10;
+      }
+
+      return string(newDataBytes);
+    }
+
+    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+      if (_i == 0) {
+          return "0";
+      }
+      uint j = _i;
+      uint len;
+      while (j != 0) {
+          len++;
+          j /= 10;
+      }
+      bytes memory bstr = new bytes(len);
+      uint k = len;
+      while (_i != 0) {
+          k = k-1;
+          uint8 temp = (48 + uint8(_i - _i / 10 * 10));
+          bytes1 b1 = bytes1(temp);
+          bstr[k] = b1;
+          _i /= 10;
+      }
+      return string(bstr);
+    }
 }
