@@ -21,14 +21,26 @@ contract Bitfruit is ERC721URIStorage {
       uint256 created;
     }
 
-    mapping(byte1 => string) private colourMapping;
+    mapping(byte1 => string) private dataToColor;
 
     constructor() ERC721("BitFruit", "BFT") {
       owner = payable(msg.sender);
-
-      colourMapping
-
-
+      dataToColor[0x30] = "#000000"; // white
+      dataToColor[0x31] = "#FFFFFF"; // black
+      dataToColor[0x32] = "#F44336"; // red
+      dataToColor[0x33] = "#E91E63"; // pink
+      dataToColor[0x34] = "#9C27B0"; // purple
+      dataToColor[0x35] = "#2196F3"; // blue
+      dataToColor[0x36] = "#4CAF50"; // green
+      dataToColor[0x37] = "#CDDC39"; // lime
+      dataToColor[0x38] = "#FFEB3B"; // yellow
+      dataToColor[0x39] = "#FB8C00"; // orange
+      dataToColor[0x41] = "#795548"; // brown
+      dataToColor[0x42] = "#9E9E9E"; // gray
+      dataToColor[0x43] = "#3F51B5"; // imdogo
+      dataToColor[0x44] = "#00BCD4"; // cyan
+      dataToColor[0x45] = "#009688"; // teal
+      dataToColor[0x46] = "#FFC107"; // amber
     }
 
     function createFruit(string memory data) public returns (uint256) {
