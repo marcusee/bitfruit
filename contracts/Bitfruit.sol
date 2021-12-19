@@ -4,13 +4,14 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-
+import "base64-sol/base64.sol";
 
 import "hardhat/console.sol";
 
 contract Bitfruit is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+
     address private owner;
 
     mapping(uint256 => Fruit) private tokenIdToFruit;
@@ -21,7 +22,7 @@ contract Bitfruit is ERC721URIStorage {
       uint256 created;
     }
 
-    mapping(byte1 => string) private dataToColor;
+    mapping(bytes1 => string) dataToColor;
 
     constructor() ERC721("BitFruit", "BFT") {
       owner = payable(msg.sender);
@@ -37,10 +38,17 @@ contract Bitfruit is ERC721URIStorage {
       dataToColor[0x39] = "#FB8C00"; // orange
       dataToColor[0x41] = "#795548"; // brown
       dataToColor[0x42] = "#9E9E9E"; // gray
-      dataToColor[0x43] = "#3F51B5"; // imdogo
+      dataToColor[0x43] = "#3F51B5"; // indigo
       dataToColor[0x44] = "#00BCD4"; // cyan
       dataToColor[0x45] = "#009688"; // teal
       dataToColor[0x46] = "#FFC107"; // amber
+    }
+
+    function seedFruits() private {
+      mapping(uint256 => Fruit)  memory asd = {
+        'asd' : 2
+      };
+
     }
 
     function createFruit(string memory data) public returns (uint256) {
@@ -54,12 +62,12 @@ contract Bitfruit is ERC721URIStorage {
           data,
           block.timestamp
         );
-
+           
         _mint(msg.sender, newTokenId);
         _setTokenURI(
           newTokenId, 
           formatTokenURI(
-            generateSVG(data)
+           svgToImageURI( generateSVG(data) )
           )
         );
         return newTokenId;
@@ -88,14 +96,13 @@ contract Bitfruit is ERC721URIStorage {
       return true;
     }
 
-    string generateSVG(string memory data) public pure returns (string memory) {
-      uint8 size = 4;
-      string memory head = '<svg width="256" height="256">';
+    function generateSVG(string memory data) public view returns (string memory) {
+      /// TODO maybe put the map here and change function to pure
 
-      string memory rows[64];
+      uint8 size = 32;
+      string memory head = '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256">';
       string memory body = '';
-
-      bytes32 memory byteData = bytes(data);
+      bytes memory dataBytes = bytes(data);
 
       for (uint i = 0 ; i < 64 ; i ++ ) {
 
@@ -105,15 +112,16 @@ contract Bitfruit is ERC721URIStorage {
         uint xPos = x * size;
         uint yPos = y * size;
 
-        string(
+        body = string(
           abi.encodePacked(
             body,
             '<rect ',
-            'height = "', uint2str(size) , '" ' 
-            'width = "', uinr2str(size), '" ',
-            'x = "', uint2str(xPos), '" ',
-            'y = "', uint2str(yPos), '" ',
-            '>',
+              'height = "', uint2str(size) , '" ' 
+              'width = "', uint2str(size), '" ',
+              'x = "', uint2str(xPos), '" ',
+              'y = "', uint2str(yPos), '" ',
+              'fill = "', dataToColor[dataBytes[i]], '" ',
+            '/>'
           )
         );
       }
