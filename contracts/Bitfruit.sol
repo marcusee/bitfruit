@@ -45,9 +45,6 @@ contract Bitfruit is ERC721URIStorage {
     }
 
     function seedFruits() private {
-      mapping(uint256 => Fruit)  memory asd = {
-        'asd' : 2
-      };
 
     }
 
