@@ -23,7 +23,6 @@ describe("Bitfruit", function () {
       
       const fruit = await bitfruit.getFruit(0);
       const svgURI = await bitfruit.tokenURI(0);
-      console.log(svgURI);      
       expect(fruit.data).equal(data1);
 
     })
