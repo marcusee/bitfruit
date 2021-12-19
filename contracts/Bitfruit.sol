@@ -42,13 +42,19 @@ contract Bitfruit is ERC721URIStorage {
     dataToColor[0x44] = "#00BCD4"; // cyan
     dataToColor[0x45] = "#009688"; // teal
     dataToColor[0x46] = "#FFC107"; // amber
+
+    seedFruits();
   }
 
   function seedFruits() private {
-
+    createFruit('33AA578377749A2352AA42A6A662A398753299A58A3537136A337981A75478A2');
+    createFruit('95677547764889713155AA889A23A1644852A779857579883421A77A69A76813');
+    createFruit('95677547764889713155AA889A23A1644852A779857579883421A77A69A76813');
+    createFruit('A168751A937A1974975544A4428288349659487976A62987111694862A15273A');
+    createFruit('A6A6A4339A791992418126333816653833571589113897648138754655756133');
   }
 
-  function createFruit(string memory data) public returns (uint256) {
+  function createFruit(string memory data) private returns (uint256) {
       require(validateData(data), 'Invalid Data');
 
       uint256 newTokenId = _tokenIds.current();
@@ -152,7 +158,7 @@ contract Bitfruit is ERC721URIStorage {
     return string(bstr);
   }
 
-  function generateSVG(string memory data) public view returns (string memory) {
+  function generateSVG(string memory data) private view returns (string memory) {
     /// TODO maybe put the map here and change function to pure
 
     uint8 size = 32;
@@ -191,13 +197,13 @@ contract Bitfruit is ERC721URIStorage {
     ));
   }
 
-  function svgToImageURI(string memory svg) public pure returns (string memory) {
+  function svgToImageURI(string memory svg) private pure returns (string memory) {
     string memory baseURL = "data:image/svg+xml;base64,";
     string memory svgBase64Encoded = Base64.encode(bytes(string(abi.encodePacked(svg))));
     return string(abi.encodePacked(baseURL,svgBase64Encoded));
   }
 
-  function formatTokenURI(string memory imageURI) public pure returns (string memory) {
+  function formatTokenURI(string memory imageURI) private pure returns (string memory) {
     return string(
       abi.encodePacked(
         "data:application/json;base64,",
