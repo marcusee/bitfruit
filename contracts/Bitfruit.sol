@@ -32,7 +32,7 @@ contract Bitfruit is ERC721 {
     createFruit('95677547764889713155AA889A23A1644852A779857579883421A77A69A76813');
     createFruit('95677547764889713155AA889A23A1644852A779857579883421A77A69A76813');
     createFruit('A168751A937A1974975544A4428288349659487976A62987111694862A15273A');
-    // createFruit('A6A6A4339A791992418126333816653833571589113897648138754655756133');
+    createFruit('A6A6A4339A791992418126333816653833571589113897648138754655756133');
   }
 
   function changeBaseUrl(string memory newUrl) public {
@@ -90,12 +90,11 @@ contract Bitfruit is ERC721 {
 
     // INSECURE gotta use that stupid chain link random thing
     uint256 seed = block.timestamp;
-    uint256 randomNumber = uint256(keccak256(abi.encodePacked(uint2str(seed))));
+    uint256 randomNumber = uint256(keccak256(abi.encodePacked(Strings.toString(seed))));
     string memory data = createNewData(A.data, B.data, randomNumber);
     uint256 childTokenId = createFruit(data);
     
     return childTokenId;
-    // return childTokenId;
   }
 
   function createNewData(string memory dataA, string memory dataB, uint256 randomNumber) private pure returns (string memory) {
@@ -117,27 +116,5 @@ contract Bitfruit is ERC721 {
     }
 
     return string(newDataBytes);
-  }
-
-  function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
-    if (_i == 0) {
-        return "0";
-    }
-    uint j = _i;
-    uint len;
-    while (j != 0) {
-        len++;
-        j /= 10;
-    }
-    bytes memory bstr = new bytes(len);
-    uint k = len;
-    while (_i != 0) {
-        k = k-1;
-        uint8 temp = (48 + uint8(_i - _i / 10 * 10));
-        bytes1 b1 = bytes1(temp);
-        bstr[k] = b1;
-        _i /= 10;
-    }
-    return string(bstr);
   }
 }
