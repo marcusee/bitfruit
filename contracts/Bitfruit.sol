@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "base64-sol/base64.sol";
-
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "hardhat/console.sol";
 
 contract Bitfruit is ERC721 {
@@ -21,11 +21,10 @@ contract Bitfruit is ERC721 {
     uint256 created;
   }
 
-  mapping(bytes1 => string) dataToColor;
+  string public baseUrl = '';
 
   constructor() ERC721("BitFruit", "BFT") {
     owner = payable(msg.sender);
-
   }
 
   function seedFruits() public {
@@ -34,6 +33,14 @@ contract Bitfruit is ERC721 {
     createFruit('95677547764889713155AA889A23A1644852A779857579883421A77A69A76813');
     createFruit('A168751A937A1974975544A4428288349659487976A62987111694862A15273A');
     // createFruit('A6A6A4339A791992418126333816653833571589113897648138754655756133');
+  }
+
+  function changeBaseUrl(string memory newUrl) public {
+    baseUrl = newUrl;
+  }
+
+  function tokenURI(uint256 _tokenId) override public view returns (string memory) {
+    return string(abi.encodePacked(baseUrl, Strings.toString(_tokenId)));
   }
 
   function createFruit(string memory data) private returns (uint256) {
