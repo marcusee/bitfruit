@@ -25,9 +25,10 @@ contract Bitfruit is ERC721 {
 
   constructor() ERC721("BitFruit", "BFT") {
     owner = payable(msg.sender);
+    seedFruits();
   }
 
-  function seedFruits() public {
+  function seedFruits() private {
     createFruit('33AA578377749A2352AA42A6A662A398753299A58A3537136A337981A75478A2');
     createFruit('95677547764889713155AA889A23A1644852A779857579883421A77A69A76813');
     createFruit('95677547764889713155AA889A23A1644852A779857579883421A77A69A76813');
