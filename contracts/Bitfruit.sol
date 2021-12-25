@@ -3,12 +3,11 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "base64-sol/base64.sol";
 
 import "hardhat/console.sol";
 
-contract Bitfruit is ERC721URIStorage {
+contract Bitfruit is ERC721 {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
@@ -26,32 +25,15 @@ contract Bitfruit is ERC721URIStorage {
 
   constructor() ERC721("BitFruit", "BFT") {
     owner = payable(msg.sender);
-    dataToColor[0x30] = "#000000"; // white
-    dataToColor[0x31] = "#FFFFFF"; // black
-    dataToColor[0x32] = "#F44336"; // red
-    dataToColor[0x33] = "#E91E63"; // pink
-    dataToColor[0x34] = "#9C27B0"; // purple
-    dataToColor[0x35] = "#2196F3"; // blue
-    dataToColor[0x36] = "#4CAF50"; // green
-    dataToColor[0x37] = "#CDDC39"; // lime
-    dataToColor[0x38] = "#FFEB3B"; // yellow
-    dataToColor[0x39] = "#FB8C00"; // orange
-    dataToColor[0x41] = "#795548"; // brown
-    dataToColor[0x42] = "#9E9E9E"; // gray
-    dataToColor[0x43] = "#3F51B5"; // indigo
-    dataToColor[0x44] = "#00BCD4"; // cyan
-    dataToColor[0x45] = "#009688"; // teal
-    dataToColor[0x46] = "#FFC107"; // amber
 
-    seedFruits();
   }
 
-  function seedFruits() private {
+  function seedFruits() public {
     createFruit('33AA578377749A2352AA42A6A662A398753299A58A3537136A337981A75478A2');
     createFruit('95677547764889713155AA889A23A1644852A779857579883421A77A69A76813');
     createFruit('95677547764889713155AA889A23A1644852A779857579883421A77A69A76813');
     createFruit('A168751A937A1974975544A4428288349659487976A62987111694862A15273A');
-    createFruit('A6A6A4339A791992418126333816653833571589113897648138754655756133');
+    // createFruit('A6A6A4339A791992418126333816653833571589113897648138754655756133');
   }
 
   function createFruit(string memory data) private returns (uint256) {
@@ -66,12 +48,6 @@ contract Bitfruit is ERC721URIStorage {
       );
           
       _mint(msg.sender, newTokenId);
-      _setTokenURI(
-        newTokenId, 
-        formatTokenURI(
-          svgToImageURI( generateSVG(data) )
-        )
-      );
       _tokenIds.increment();
       return newTokenId;
   }
@@ -156,67 +132,5 @@ contract Bitfruit is ERC721URIStorage {
         _i /= 10;
     }
     return string(bstr);
-  }
-
-  function generateSVG(string memory data) private view returns (string memory) {
-    /// TODO maybe put the map here and change function to pure
-
-    uint8 size = 32;
-    string memory head = '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256">';
-    string memory body = '';
-    bytes memory dataBytes = bytes(data);
-
-    for (uint i = 0 ; i < 64 ; i ++ ) {
-
-      uint x = i % 8;
-      uint y = i / 8;
-
-      uint xPos = x * size;
-      uint yPos = y * size;
-
-      body = string(
-        abi.encodePacked(
-          body,
-          '<rect ',
-            'height = "', uint2str(size) , '" ' 
-            'width = "', uint2str(size), '" ',
-            'x = "', uint2str(xPos), '" ',
-            'y = "', uint2str(yPos), '" ',
-            'fill = "', dataToColor[dataBytes[i]], '" ',
-          '/>'
-        )
-      );
-    }
-
-    string memory tail = '</svg>';
-
-    return string(abi.encodePacked(
-      head,
-      body,
-      tail
-    ));
-  }
-
-  function svgToImageURI(string memory svg) private pure returns (string memory) {
-    string memory baseURL = "data:image/svg+xml;base64,";
-    string memory svgBase64Encoded = Base64.encode(bytes(string(abi.encodePacked(svg))));
-    return string(abi.encodePacked(baseURL,svgBase64Encoded));
-  }
-
-  function formatTokenURI(string memory imageURI) private pure returns (string memory) {
-    return string(
-      abi.encodePacked(
-        "data:application/json;base64,",
-        Base64.encode(
-          bytes(
-            abi.encodePacked(
-              '{"name":"',
-              "SVG NFT", // You can add whatever name here
-              '", "description":"An NFT based on SVG!", "attributes":"", "image":"',imageURI,'"}'
-            )
-          )
-        ) 
-      )
-    );
   }
 }
