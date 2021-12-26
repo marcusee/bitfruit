@@ -20,7 +20,8 @@ describe("Bitfruit", function () {
       // const BitFruit = await hre.ethers.getContractFactory("Bitfruit");
       // const bitfruit = await BitFruit.deploy();
       // await bitfruit.deployed();
-      // let transaction1 = await bitfruit.createFruit(data1);
+
+      // console.log(transaction1);
       // let transaction2 = await bitfruit.createFruit(data2);
   
       // let a = await bitfruit.getFruit(0);
